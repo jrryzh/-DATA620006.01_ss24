@@ -66,17 +66,10 @@ class QLearningAgent(ReinforcementAgent):
           terminal state, you should return a value of 0.0.
         """
         "*** YOUR CODE HERE ***"
-        max_action = None
-        max_q_value = float('-inf')
-        for action in self.getLegalActions(state):
-            q_value = self.getQValue(state,action)
-            if q_value > max_q_value:
-                max_q_value = q_value
-                max_action = action
-        if max_action is None:
+        actions = self.getLegalActions(state)
+        if not actions:
             return 0.0
-        else:
-            return max_q_value
+        return max(self.q_values[(state, action)] for action in actions)
 
     def computeActionFromQValues(self, state):
         """
@@ -85,18 +78,12 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
-        max_q_value = float('-inf')
-        max_action = None
-        
-        for action in self.getLegalActions(state):
-            q_value = self.getQValue(state,action)
-            if q_value > max_q_value:
-                max_q_value = q_value
-                max_action = action
-        if max_action is None:
+        actions = self.getLegalActions(state)
+        if not actions:
             return None
-        else:
-            return max_action
+        best_value = self.computeValueFromQValues(state)
+        best_actions = [action for action in actions if self.q_values[(state, action)] == best_value]
+        return random.choice(best_actions) if best_actions else None
 
     def getAction(self, state):
         """
