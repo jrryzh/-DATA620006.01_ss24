@@ -69,7 +69,7 @@ class QLearningAgent(ReinforcementAgent):
         actions = self.getLegalActions(state)
         if not actions:
             return 0.0
-        return max(self.q_values[(state, action)] for action in actions)
+        return max(self.getQValue(state, action) for action in actions)
 
     def computeActionFromQValues(self, state):
         """
@@ -82,7 +82,7 @@ class QLearningAgent(ReinforcementAgent):
         if not actions:
             return None
         best_value = self.computeValueFromQValues(state)
-        best_actions = [action for action in actions if self.q_values[(state, action)] == best_value]
+        best_actions = [action for action in actions if self.getQValue(state, action) == best_value]
         return random.choice(best_actions) if best_actions else None
 
     def getAction(self, state):
@@ -183,29 +183,12 @@ class ApproximateQAgent(PacmanQAgent):
         featureVector = self.featExtractor.getFeatures(state, action)
         return sum(self.weights[feature] * featureVector[feature] for feature in featureVector)
 
-    # def update(self, state, action, nextState, reward: float):
-    #     """
-    #        Should update your weights based on transition
-    #     """
-    #     "*** YOUR CODE HERE ***"
-    #     featureVector = self.featExtractor.getFeatures(state, action)
-    #     for feature in featureVector:
-    #       self.weights[feature] = self.weights[feature] + self.alpha * (reward + self.discount * self.getValue(nextState) - self.getQValue(state,action)) * featureVector[feature]
-
     def update(self, state, action, nextState, reward: float):
         """
            Should update your weights based on transition
         """
-        "*** YOUR CODE HERE ***"
-        maxQvalue = float('-inf')
-        flag = 0
-        for newaction in self.getLegalActions(nextState):
-            flag = 1
-            if self.getQValue(nextState, newaction) > maxQvalue:
-                maxQvalue = self.getQValue(nextState, newaction)
-        if flag == 0:
-            maxQvalue = 0
-        difference = (reward + self.discount * maxQvalue) - self.getQValue(state, action)
+        "*** YOUR CODE HERE ***"   
+        difference = (reward + self.discount * self.getValue(nextState)) - self.getQValue(state, action)
         for feature in self.featExtractor.getFeatures(state, action):
             self.weights[feature] = self.weights[feature] + self.alpha * difference * \
                                     self.featExtractor.getFeatures(state, action)[feature]
