@@ -183,6 +183,16 @@ class ApproximateQAgent(PacmanQAgent):
         featureVector = self.featExtractor.getFeatures(state, action)
         return sum(self.weights[feature] * featureVector[feature] for feature in featureVector)
 
+
+    # def update(self, state, action, nextState, reward: float):
+    #     """
+    #        Should update your weights based on transition
+    #     """
+    #     "*** YOUR CODE HERE ***"
+    #     featureVector = self.featExtractor.getFeatures(state, action)
+    #     for feature in featureVector:
+    #       self.weights[feature] = self.weights[feature] + self.alpha * (reward + self.discount * self.getValue(nextState) - self.getQValue(state,action)) * featureVector[feature]
+
     def update(self, state, action, nextState, reward: float):
         """
            Should update your weights based on transition
